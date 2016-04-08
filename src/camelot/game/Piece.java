@@ -31,11 +31,11 @@ public class Piece {
         color = clr;
     }
     
-    public String getMoveType(Position start,Position end)
+    public String getMoveType(Position start,Position end,CamelotGame cg)
     {
         int var;
         Piece p;
-        p = CamelotGame.getPiece(end.row,end.col);
+        p = cg.getPiece(end.row,end.col);
         if(p != null)
             return "none";
         String str = new String();
@@ -46,7 +46,7 @@ public class Piece {
         var = (end.row - start.row)*(end.row-start.row) + (end.col - start.col)*(end.col - start.col);
         if(var == 8 || var == 4)
         {
-            p = CamelotGame.getPiece((end.row + start.row)/2,(end.col + start.col)/2);
+            p = cg.getPiece((end.row + start.row)/2,(end.col + start.col)/2);
             if(p != null && p.color == color)
             {
                 str="canter";
@@ -61,10 +61,10 @@ public class Piece {
         str="none";
         return str;
     }
-    public int checkNextMove(Position p)
+    public int checkNextMove(Position p,CamelotGame cg)
     {
         String str = new String();
-        str = getMoveType(pos,p);
+        str = getMoveType(pos,p,cg);
         System.out.println(str);
         pos = p;
         if(str=="plain")
@@ -116,30 +116,32 @@ public class Piece {
         return 0;
     }
     
-    public Piece executeNextMove(Position p)
+    public Piece executeNextMove(Position p, CamelotGame cg)
     {
         String str = new String();
         int x,y,x2,y2;
-        str = getMoveType(pos,p);
+        str = getMoveType(pos,p,cg);
         System.out.println(str);
         x = pos.row;y = pos.col;x2 = p.row;y2 = p.col;
-        CamelotGame.grid[x][y].piece = null;
-        CamelotGame.grid[x][y].empty = 1;
-        CamelotGame.grid[x2][y2].piece = this;
-        CamelotGame.grid[x2][y2].empty = 0;
+        cg.grid[x][y].piece = null;
+        cg.grid[x][y].empty = 1;
+        cg.grid[x2][y2].piece = this;
+        cg.grid[x2][y2].empty = 0;
         pos = new Position(x2,y2);
         if(str == "plain" || str == "canter")
             return null;
         
         else if(str == "jump")
         {
+            System.out.println(" in jump");
             Piece pc;
-            x = (p.row + p.row)/2;
-            y = (p.col + p.col)/2;
-            
-            pc = CamelotGame.getPiece(x2,y2);
-            CamelotGame.grid[x][y].piece = null;
-            CamelotGame.grid[x][y].empty = 1;
+            x = (x+x2)/2;
+            y = (y + y2)/2;
+            System.out.println(x+" " + y);
+            pc = cg.getPiece(x,y);
+            cg.grid[x][y].piece = null;
+            cg.grid[x][y].empty = 1;
+            System.out.println(pc.id);
             return pc;
         }
         
@@ -150,4 +152,6 @@ public class Piece {
         
         return null;
     }
+
+    
 }

@@ -45,26 +45,26 @@ public class Move {
     {
         p.canter = p.jump = p.plainMove = 0;
     }
-    public int checkMove()
+    public int checkMove(CamelotGame cg)
     {
         Piece p;
         //p = new Piece();
         int i;
         System.out.println(" " + (chance.get(0)).row + (chance.get(0)).col);
-        p = CamelotGame.getPiece((chance.get(0)).row,(chance.get(0)).col);
+        p = cg.getPiece((chance.get(0)).row,(chance.get(0)).col);
         if(p == null)
         {
             System.out.println("h");
             return 0;
         }
-        System.out.println("h1" + p.color + CamelotGame.turn);
+        System.out.println("h1" + p.color + cg.turn);
         refreshPiece(p);
-        if(CamelotGame.turn == p.color)
+        if(cg.turn == p.color)
         {
             p.pos = new Position((chance.get(0)).row,(chance.get(0)).col);
             for(i=1;i<chanceCnt;i++)
             {
-                if(p.checkNextMove(chance.get(i)) == 0)
+                if(p.checkNextMove(chance.get(i),cg) == 0)
                     return 0;
             }
             if(p.canter == 1 && p.jump == 0)
@@ -77,7 +77,7 @@ public class Move {
         return 0;
     }
     
-    public void executeMove()
+    public void executeMove(CamelotGame cg)
     {
         Piece p,deadPiece;
         int x,y,x2,y2,i;
@@ -85,30 +85,30 @@ public class Move {
         y = chance.get(0).col;
         x2 = chance.get(chanceCnt - 1).row;
         y2 = chance.get(chanceCnt - 1).col;
-        p = CamelotGame.getPiece(x,y);
+        p = cg.getPiece(x,y);
         p.pos = new Position(x,y);
         if(p.jump == 0)
         {
-            CamelotGame.grid[x][y].piece = null;
-            CamelotGame.grid[x][y].empty = 1;
+            cg.grid[x][y].piece = null;
+            cg.grid[x][y].empty = 1;
             refreshPiece(p);
             p.pos = new Position(x2,y2);
-            CamelotGame.grid[x2][y2].piece = p; 
-            CamelotGame.grid[x2][y2].empty = 0;
+            cg.grid[x2][y2].piece = p; 
+            cg.grid[x2][y2].empty = 0;
         }
         else
         {
            for(i=1;i<chanceCnt;i++)
            {
-               deadPiece = p.executeNextMove(chance.get(i));
+               deadPiece = p.executeNextMove(chance.get(i),cg);
                
            }
-           CamelotGame.grid[x][y].piece = null;
-           CamelotGame.grid[x][y].empty = 1;
+           cg.grid[x][y].piece = null;
+           cg.grid[x][y].empty = 1;
            refreshPiece(p);
             p.pos = new Position(x2,y2);
-           CamelotGame.grid[x2][y2].piece = p;
-           CamelotGame.grid[x2][y2].empty = 0;
+           cg.grid[x2][y2].piece = p;
+           cg.grid[x2][y2].empty = 0;
         }
     }
     

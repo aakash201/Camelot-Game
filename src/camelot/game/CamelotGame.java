@@ -15,11 +15,12 @@ public class CamelotGame {
     /**
      * @param args the command line arguments
      */
-    public static Cell[][] grid;
-    public static int turn;
+    public Cell[][] grid;
+    public int turn;
     public int state;
     public Move curMove;
     public Player player1,player2;
+    public GUI gui;
     public CamelotGame()
     {
         turn = 0;
@@ -65,10 +66,14 @@ public class CamelotGame {
         temp = new Cell();
         grid[7][4].setPiece(7,4,1,0);grid[7][9].setPiece(7,9,1,0);grid[6][3].setPiece(6,3,1,0);grid[6][10].setPiece(6,10,1,0);
         grid[10][4].setPiece(10,4,1,1);grid[10][9].setPiece(10,9,1,1);grid[11][3].setPiece(11,3,1,1);grid[11][10].setPiece(11,10,1,1);
+        // now add gui
+        gui = new GUI(16,14);
+        gui.init();
     }
     
     public void display()
     {
+        gui.refreshGrid(this);
         int i,j;
         String str;
         str="";
@@ -134,7 +139,7 @@ public class CamelotGame {
     {
         
     }
-    public static Piece getPiece(int row,int col)
+    Piece getPiece(int row,int col)
     {
         if(grid[row][col].empty == 1)
             return null;
@@ -142,17 +147,19 @@ public class CamelotGame {
     }
     public void play()
     {
+        gui.refreshGrid(this);
         while(checkState() == 1)
         {
             Move m;
             m = new Move();
             m.getMove();
-            if(m.checkMove() == 1)
+            if(m.checkMove(this) == 1)
             {
                 System.out.println("\ncorrect move\n");
-                m.executeMove();
+                m.executeMove(this);
                 if(turn == 0) turn = 1;
                 else turn = 0;
+                gui.refreshGrid(this);
                 this.display();
             }
             else System.out.println("\nincorrect move\n");
