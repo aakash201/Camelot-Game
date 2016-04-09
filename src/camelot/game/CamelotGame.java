@@ -68,7 +68,7 @@ public class CamelotGame {
         grid[10][4].setPiece(10,4,1,1);grid[10][9].setPiece(10,9,1,1);grid[11][3].setPiece(11,3,1,1);grid[11][10].setPiece(11,10,1,1);
         // now add gui
         gui = new GUI(16,14);
-        gui.init();
+        
     }
     
     public void display()
@@ -139,12 +139,29 @@ public class CamelotGame {
     {
         
     }
+    
+    public void singleMove(Move move)
+    {
+        move.display();
+        if(move.checkMove(this) == 1)
+        {
+            System.out.println("\ncorrect move\n");
+            move.executeMove(this);
+            if(turn == 0) turn = 1;
+            else turn = 0;
+            gui.refreshGrid(this);
+            this.display();
+        }
+        else System.out.println("\nincorrect move\n");
+    }
+    
     Piece getPiece(int row,int col)
     {
         if(grid[row][col].empty == 1)
             return null;
         return (grid[row][col].piece);
     }
+    
     public void play()
     {
         gui.refreshGrid(this);
@@ -167,13 +184,15 @@ public class CamelotGame {
         }
         declareWinner();
     }
+    
     public static void main(String[] args) {
         // TODO code application logic here
         CamelotGame game ;
         
         game = new CamelotGame();
+        game.gui.init(game);
         game.display();
-        game.play();
+        //game.play();
         game.display();
     }
     

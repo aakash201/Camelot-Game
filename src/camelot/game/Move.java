@@ -112,4 +112,15 @@ public class Move {
         }
     }
     
+    public void display()
+    {
+        int i;
+        System.out.println("\nMove\n");
+        System.out.println(chanceCnt);
+        for(i=0;i<chanceCnt;i++)
+        {
+            System.out.println(chance.get(i).row + " "  + chance.get(i).col);
+        }
+    }
+    
 }
