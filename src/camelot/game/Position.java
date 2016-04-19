@@ -24,4 +24,17 @@ public class Position {
         row = a;col = b;
     }
     
+    public Position(Position p)
+    {
+        this.row = p.row;
+        this.col = p.col;
+    }
+    
+    public String toString()
+    {
+        String str = new String();
+        str = row + " " + col;
+        return str;
+    }
+    
 }

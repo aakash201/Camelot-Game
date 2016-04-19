@@ -34,4 +34,18 @@ public class Cell {
         piece = new Piece(type,clr);
     }
     
+    public void setPiece(Piece pc)
+    {
+        if(pc == null)
+        {
+            empty = 1;
+            piece = null;
+        }
+        else
+        {
+            empty = 0;
+            piece = new Piece(pc);
+        }
+    }
+    
 }
