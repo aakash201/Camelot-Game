@@ -64,22 +64,9 @@ public class GUI extends JFrame implements ActionListener{
             deadPieceList = new ArrayList<Piece>();
             Piece piece;
             int i,j;
-            /*
-            for(i=1; i<=16; i++){
-                for(j=1; j<=12; j++){
-                    if(null != (piece = game.getPiece(i, j)))
-                    {
-                        if(piece.color == 0)
-                        {
-                            System.out.println("\nget all moves for : "+i+" "+j+"\n");
-                            piece.getAllMoves(game);
-                        }
-                    }
-                }
-            }
-            */
             
-            move = MiniMax.Maxi(2,game).move;
+            
+            move = MiniMax.Maxi(4,game).move;
             deadPieceList=game.singleMove(move);
             //refreshGrid(game);
             if(game.checkState() == 0)
@@ -174,7 +161,7 @@ public class GUI extends JFrame implements ActionListener{
                 
                 else if(cg.grid[i][j].castle == 1)
                 {
-                    System.out.println("castle");
+                    //System.out.println("castle");
                     if(j % 2 == 0)
                         btn.setIcon(castle1);
                     else btn.setIcon(castle2);
@@ -211,7 +198,9 @@ public class GUI extends JFrame implements ActionListener{
                     pc.pos = new Position(i,j);
                     assignPiece(btn,pc);
                 }
-                else btn.setIcon(null);
+                
+                else if ( cg.grid[i][j].castle == 0)
+                    btn.setIcon(null);
             }
         }
     }

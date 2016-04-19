@@ -179,21 +179,21 @@ public class CamelotGame {
     public ArrayList<Piece> singleMove(Move move)
     {
         ArrayList<Piece> deadPieceList = new ArrayList<Piece>();
-        move.display();
+        //move.display();
         
         if(move.checkMove(this) == 1)
         {
             //System.out.println("\ncorrect move");
-            System.out.println("yes " + "cnt = " + cnt);
+            //System.out.println("yes " + "cnt = " + cnt);
             
             deadPieceList=move.executeMove(this);
             if(turn == 0) turn = 1;
             else turn = 0;
             gui.refreshGridUtil(this);
-            System.out.println("no");
+            //System.out.println("no");
             //display();
         }
-        else ;//System.out.println("\nincorrect move");
+        else System.out.println("\nincorrect move");
         return deadPieceList;
     }
     

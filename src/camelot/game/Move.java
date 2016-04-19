@@ -174,14 +174,14 @@ public class Move {
     
     public void display()
     {
-      /*  int i;
-       /* System.out.println("\nMove\n");
+        int i;
+        System.out.println("Move");
         System.out.println(chanceCnt);
         for(i=0;i<chanceCnt;i++)
         {
             System.out.print(chance.get(i).row + " "  + chance.get(i).col + "  ");
         }
-        System.out.println("\n");*/
+        System.out.println("\n");
     }
     
     public int popBack()

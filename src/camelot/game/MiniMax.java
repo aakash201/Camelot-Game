@@ -12,11 +12,12 @@ import java.util.ArrayList;
  * @author aakashtyagi
  */
 public class MiniMax {
+    static double INF = 1000000000;
     
-    public static MinMaxResult Mini(int depth, CamelotGame cg){
+    public static MinMaxResult alphaBetaMin(double alpha,double beta,int depth, CamelotGame cg){
         cg.cnt++;
         int i, j;
-        double INF = 1000000000;
+        double score;
         if (depth == 0) {
             return new MinMaxResult(null, cg.getBoundingValue());
         }
@@ -40,10 +41,19 @@ public class MiniMax {
             //CamelotGame prevState = new CamelotGame(cg);
             ArrayList<Piece> deadPieces = new ArrayList<Piece>();
             deadPieces = cg.singleMove(move);            
-            MinMaxResult tempres = Maxi(depth-1, cg);
-            if(tempres.val < res.val)
+            MinMaxResult tempres = alphaBetaMax(alpha,beta,depth-1, cg);
+            
+            if(tempres.val <= alpha)
             {
-                res.val = tempres.val;
+                res.move = move;
+                res.val = alpha;
+                cg.revertMove(move,deadPieces);
+                return res;
+            }
+            if(tempres.val < beta)
+            {
+                beta = tempres.val;
+                res.val = beta;
                 res.move = move;
             }
             cg.revertMove(move,deadPieces);
@@ -52,13 +62,13 @@ public class MiniMax {
         return res;
     }
  
-    public static MinMaxResult Maxi(int depth, CamelotGame cg){
+    public static MinMaxResult alphaBetaMax(double alpha,double beta, int depth, CamelotGame cg){
         int i, j;
         cg.cnt++;
         if (depth == 0){
             return new MinMaxResult(null, cg.getBoundingValue());
         }
-        double INF = 1000000000;
+        
         MinMaxResult res = new MinMaxResult(null, -INF);
         ArrayList<Move> moveList = new ArrayList<>();
         Piece piece;
@@ -82,16 +92,28 @@ public class MiniMax {
             ArrayList<Piece> deadPieces = new ArrayList<Piece>();
             deadPieces = cg.singleMove(move); 
             //deadPieces = cg.singleMove(move);            
-            MinMaxResult tempres = Mini(depth-1, cg);
-            if(tempres.val > res.val)
+            MinMaxResult tempres = alphaBetaMin(alpha,beta,depth-1, cg);
+            
+            if(tempres.val >= beta)
             {
-                res.val = tempres.val;
+                res.move = move;res.val = beta;
+                cg.revertMove(move,deadPieces);
+                return res;
+            }
+            if(tempres.val > alpha)
+            {
+                alpha = tempres.val;
+                res.val = alpha;
                 res.move = move;
             }
             cg.revertMove(move,deadPieces);
         }
         
         return res;
+    }
+    
+    public static MinMaxResult Maxi(int depth, CamelotGame cg){
+        return (alphaBetaMax(-INF,INF,depth,cg));
     }
     public static void Merge(ArrayList<Move> moveList, ArrayList<Move> pieceList)
     {

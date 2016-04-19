@@ -253,6 +253,7 @@ public class Piece {
    
     public void getAllJumpMovesUtil(CamelotGame cg)
     {
+        int flag = 0;
         ArrayList<Position> temp;
         Position tempPos = new Position(pos);
         int i,x,y,z,c;
@@ -275,7 +276,15 @@ public class Piece {
             tempMove.chance.add(new Position(temp.get(i)));tempMove.chanceCnt++;
             if(tempMove.checkMove(cg) == 1)
             validMoves.add(new Move(tempMove));
-            else System.out.println("wrong move");
+            else {
+                System.out.println("wrong jump move");
+                if(flag == 0)
+                {
+                    flag = 1;
+                    cg.display();
+                    tempMove.display();
+                }
+            }
             pos = new Position(temp.get(i));
             getAllJumpMovesUtil(cg);
             tempMove.popBack();
@@ -286,6 +295,7 @@ public class Piece {
     }
     public void getAllCanterMovesUtil(CamelotGame cg)
     {
+        int flag=0;
         ArrayList<Position> temp;
         Position tempPos = new Position(pos);
         int i,x,y,z,c;
@@ -301,13 +311,22 @@ public class Piece {
             tempMove.chance.add(new Position(temp.get(i)));tempMove.chanceCnt++;
             if(tempMove.checkMove(cg) == 1)
             validMoves.add(new Move(tempMove));
-            else System.out.println("wrong move");
+            else {
+                System.out.println("wrong canter and/or jump move");
+                if(flag == 0)
+                {
+                    flag = 1;
+                    cg.display();
+                    tempMove.display();
+                }
+            }
             pos = new Position(temp.get(i));
             getAllCanterMovesUtil(cg);
             tempMove.popBack();
         }
         if(isKnight == 1)
         {
+            pos = new Position(tempPos);
         temp = getNextJumpMoves();/*
         System.out.println("start jump\n");
         for(i=0;i<temp.size();i++)
@@ -337,6 +356,7 @@ public class Piece {
     }
     public void getAllMovesUtil(CamelotGame cg)
     {
+        int flag = 0;
         Position tempPos = new Position(pos);
         tempMove.chance.add(new Position(pos));
         tempMove.chanceCnt++;
@@ -368,7 +388,15 @@ public class Piece {
             tempMove.chance.add(new Position(temp.get(i)));tempMove.chanceCnt++;
             if(tempMove.checkMove(cg) == 1)
             validMoves.add(new Move(tempMove));
-            else System.out.println("wrong move");
+            else {
+                System.out.println("wrong canter and/or jump move");
+                if(flag == 0)
+                {
+                    flag = 1;
+                    cg.display();
+                    tempMove.display();
+                }
+            }
             pos = new Position(temp.get(i));
             getAllCanterMovesUtil(cg);
             tempMove.popBack();
@@ -391,7 +419,15 @@ public class Piece {
             tempMove.chance.add(new Position(temp.get(i)));tempMove.chanceCnt++;
             if(tempMove.checkMove(cg) == 1)
             validMoves.add(new Move(tempMove));
-            else System.out.println("wrong move");
+            else {
+                System.out.println("wrong jump move");
+                if(flag == 0)
+                {
+                    flag = 1;
+                    cg.display();
+                    tempMove.display();
+                }
+            }
             pos = new Position(temp.get(i));
             getAllJumpMovesUtil(cg);
             tempMove.popBack();
