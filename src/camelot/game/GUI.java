@@ -11,16 +11,21 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
+
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.border.Border;
 
 /**
  *
  * @author aakashtyagi
  */
-public class GUI extends JFrame implements ActionListener{
+public class GUI extends JFrame implements MouseListener{
     
     public JButton[][] JButtonArr;
     ImageIcon blackPawn,blackKnight,whitePawn,whiteKnight,castle1,castle2;
@@ -30,12 +35,13 @@ public class GUI extends JFrame implements ActionListener{
     Move move;
     
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void mouseClicked(MouseEvent e) {
         JButton btn;
         int var;
         btn = JButtonArr[1][1];
         if(e.getSource() == JButtonArr[1][1])
         {
+            /*
             moveFlag = ((moveFlag == 1) ? 0 : 1);
             btn.setText((moveFlag == 1) ? "S" : "M");
             if(moveFlag == 0)
@@ -52,6 +58,9 @@ public class GUI extends JFrame implements ActionListener{
                 deadPieceList = new ArrayList<Piece>();
             }
             return ;
+                    */
+            move = new Move();
+            refreshGridUtil(game);
         }
         else if(e.getSource() == JButtonArr[2][1])
         {
@@ -66,7 +75,9 @@ public class GUI extends JFrame implements ActionListener{
             int i,j;
             
             
-            move = MiniMax.Maxi(4,game).move;
+            move = MiniMax.Maxi(3,game).move;
+            game.display();
+            move.display();
             deadPieceList=game.singleMove(move);
             //refreshGrid(game);
             if(game.checkState() == 0)
@@ -83,11 +94,27 @@ public class GUI extends JFrame implements ActionListener{
                     btn = JButtonArr[i][j];
                     if(e.getSource() == btn)
                     {
-                        if(moveFlag == 1)
+                        if(moveFlag == 0)
                         {
-                            move.chance.add(new Position(i,j));
-                            move.chanceCnt++;
+                            moveFlag = 1;
+                            move = new Move();
+                            deadPieceList = new ArrayList<Piece>();
                         }
+                    
+                        Border border = BorderFactory.createBevelBorder(1,Color.BLUE,Color.BLUE);
+                        btn.setBorder(border);
+                        move.chance.add(new Position(i,j));
+                        move.chanceCnt++;
+                        
+                        if(e.getButton() == MouseEvent.BUTTON3)
+                        {
+                            moveFlag = 0;
+                            deadPieceList=game.singleMove(move);
+                            //refreshGrid(game);
+                            if(game.checkState() == 0)
+                                game.declareWinner();
+                        }
+                    
                     }
                 }
             }
@@ -116,12 +143,12 @@ public class GUI extends JFrame implements ActionListener{
                 JButtonArr[i][j] = button;
                 pane.add(button);
              
-                button.addActionListener(this);
+                button.addMouseListener(this);
             }
         }
         JButton btn;
         btn = JButtonArr[1][1];
-        btn.setText("M");
+        btn.setText("Cancel");
         btn = JButtonArr[2][1];
         btn.setText("U");
         btn = JButtonArr[3][1];
@@ -148,6 +175,8 @@ public class GUI extends JFrame implements ActionListener{
             {
                 
                 btn = JButtonArr[i][j];
+                Border defaultBorder = BorderFactory.createBevelBorder(1);
+                btn.setBorder(defaultBorder);
                 v = (i%2) ^ (j%2);
                 
                 if(v == 1)
@@ -170,12 +199,15 @@ public class GUI extends JFrame implements ActionListener{
                 if(pc != null)
                 {
                     pc.pos = new Position(i,j);
+                    cg.grid[i][j].empty=0;
                     assignPiece(btn,pc);
                 }
                 else
                 {
                     if(cg.grid[i][j].castle != 1)
                     btn.setIcon(null);
+                    else btn.setIcon(castle1);
+                    cg.grid[i][j].empty = 1;
                 }
             }
         }
@@ -192,15 +224,23 @@ public class GUI extends JFrame implements ActionListener{
             for(j=1;j<=12;j++)
             {
                 btn = JButtonArr[i][j];
+                Border defaultBorder = BorderFactory.createBevelBorder(1);
+                btn.setBorder(defaultBorder);
+                //btn.getBorder();
                 pc = cg.getPiece(i,j);
                 if(pc != null)
                 {
                     pc.pos = new Position(i,j);
+                    cg.grid[i][j].empty = 0;
                     assignPiece(btn,pc);
                 }
                 
-                else if ( cg.grid[i][j].castle == 0)
+                else {
+                    if ( cg.grid[i][j].castle == 0)
                     btn.setIcon(null);
+                    else btn.setIcon(castle1);
+                    cg.grid[i][j].empty = 1;
+                }
             }
         }
     }
@@ -217,5 +257,25 @@ public class GUI extends JFrame implements ActionListener{
         {
             btn.setIcon((pc.isKnight == 1 ? whiteKnight : whitePawn));
         }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

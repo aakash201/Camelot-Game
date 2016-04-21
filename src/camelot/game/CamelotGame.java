@@ -302,11 +302,19 @@ public class CamelotGame {
         x = move.chance.get(move.chance.size()-1).row;
         y = move.chance.get(move.chance.size()-1).col;
         pc = getPiece(x,y);
+        if(pc == null)
+        {
+            System.out.println("true");
+            display();
+            move.display();
+        }
         grid[x][y].setPiece(null);
+        grid[x][y].empty = 1;
         x = move.chance.get(0).row;
         y = move.chance.get(0).col;
         pc.pos = new Position(x,y);
         grid[x][y].setPiece(pc);
+        grid[x][y].empty = 0;
         turn = (turn == 0 ? 1 : 0);
         //display();
         gui.refreshGridUtil(this);
