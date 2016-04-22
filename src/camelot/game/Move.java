@@ -184,6 +184,17 @@ public class Move {
         System.out.println("\n");
     }
     
+    public String toString()
+    {
+        String str = new String();
+        int i;
+        for(i=0;i<chanceCnt;i++)
+        {
+            str = str + (chance.get(i).row + ":"  + chance.get(i).col + " ");
+        }
+        return str;
+    }
+    
     public int popBack()
     {
         if(chanceCnt == 0)

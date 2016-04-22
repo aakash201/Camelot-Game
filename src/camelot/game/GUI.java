@@ -5,10 +5,14 @@
  */
 package camelot.game;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -19,6 +23,10 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.Border;
 
 /**
@@ -29,6 +37,8 @@ public class GUI extends JFrame implements MouseListener{
     
     public JButton[][] JButtonArr;
     ImageIcon blackPawn,blackKnight,whitePawn,whiteKnight,castle1,castle2;
+    JTextField textTurn,textMove,textResult,textPlayerName;
+    JButton updateBtn;
     public int moveFlag;
     public CamelotGame game;
     public ArrayList<Piece> deadPieceList;
@@ -39,6 +49,12 @@ public class GUI extends JFrame implements MouseListener{
         JButton btn;
         int var;
         btn = JButtonArr[1][1];
+        if(e.getSource() == updateBtn)
+        {
+            System.out.println("hello");
+            game.player2.name = textPlayerName.getText();
+            System.out.println(game.player2.name);
+        }
         if(e.getSource() == JButtonArr[1][1])
         {
             /*
@@ -66,6 +82,7 @@ public class GUI extends JFrame implements MouseListener{
         {
             game.revertMove(move, deadPieceList);
             refreshGrid(game);
+            updateInfoPanel();
         }
         else if(e.getSource() == JButtonArr[3][1])
         {
@@ -75,12 +92,12 @@ public class GUI extends JFrame implements MouseListener{
             int i,j;
             
             
-            move = MiniMax.Maxi(3,game).move;
+            move = MiniMax.Maxi(2,game).move;                     // AI move
             game.display();
             move.display();
             deadPieceList=game.singleMove(move,1);
             refreshGridUtil(game);
-            
+            updateInfoPanel();
         }
         else
         {
@@ -110,7 +127,7 @@ public class GUI extends JFrame implements MouseListener{
                             moveFlag = 0;
                             deadPieceList=game.singleMove(move,1);
                             refreshGridUtil(game);
-                            
+                            updateInfoPanel();
                         }
                     
                     }
@@ -130,8 +147,11 @@ public class GUI extends JFrame implements MouseListener{
         castle2 = new ImageIcon("src/images/castle2.png");
         int i,j;
         Container pane = getContentPane();
-        pane.setLayout(new GridLayout(rows, cols));
+        JPanel guiObj = new JPanel(new BorderLayout(30,30));
+        JPanel guiObj1 = new JPanel(new GridLayout(rows,cols));
+        //pane.setLayout(new GridLayout(rows, cols));
         //ImageIcon pawn = new ImageIcon("src/images/blackKnight.png");
+        guiObj.add(guiObj1);
         for (i = 1; i <= 16; i++) {
             for(j = 1 ; j <= 12 ; j++)
             {
@@ -139,11 +159,81 @@ public class GUI extends JFrame implements MouseListener{
                 button.setPreferredSize(new Dimension(50,50));
                 //button.setIcon(pawn);
                 JButtonArr[i][j] = button;
-                pane.add(button);
-             
+                guiObj1.add(button);
+                
                 button.addMouseListener(this);
             }
         }
+        
+        
+        
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(Color.CYAN);
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.insets = new Insets(10,10,10,10);
+        constraints.gridx = 0;
+        constraints.gridy = 0; 
+        JLabel playerName = new JLabel("Player Name");
+        panel.add(playerName, constraints);
+        constraints.gridx = 1;
+        textPlayerName= new JTextField(20);
+        panel.add(textPlayerName, constraints);
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        updateBtn = new JButton("Update");
+        updateBtn.addMouseListener(this);
+        panel.add(updateBtn,constraints);
+        JLabel labelTurn = new JLabel("Turn");
+        textTurn = new JTextField(20);
+        textTurn.setText("AI");
+        constraints.gridy = 2;
+        panel.add(labelTurn,constraints);
+        constraints.gridx = 1;
+        panel.add(textTurn,constraints);
+        constraints.gridx = 0;
+        constraints.gridy = 3;
+        JLabel labelLastMove = new JLabel("Last Move");
+        panel.add(labelLastMove,constraints);
+        constraints.gridx = 1;
+        textMove = new JTextField(20);
+        panel.add(textMove,constraints);
+        constraints.gridx = 0;
+        constraints.gridy = 4;
+        JLabel labelResult = new JLabel("Result");
+        panel.add(labelResult,constraints);
+        constraints.gridx = 1;
+        textResult=new JTextField(20);
+        panel.add(textResult,constraints);
+        /*
+        JLabel AIDeadPieces = new JLabel("AI Dead Pieces");
+        JLabel playerDeadPieces = new JLabel("Your Dead Pieces");
+        JButton[] AIPieces = new JButton[12];
+        JButton[] PlayerPieces = new JButton[12];
+        constraints.gridx = 0;constraints.gridy = 5;
+        panel.add(AIDeadPieces,constraints);
+        constraints.gridy = 6;
+        for(i=0;i<6;i++)
+        {
+            AIPieces[i] = new JButton();
+            AIPieces[i].setPreferredSize(new Dimension(30,30));
+            panel.add(AIPieces[i],constraints);
+            constraints.gridx++;
+        }
+        
+        constraints.gridy = 7;constraints.gridx = 0;
+        for(i=6;i<12;i++)
+        {
+            AIPieces[i] = new JButton();
+            AIPieces[i].setPreferredSize(new Dimension(30,30));
+            panel.add(AIPieces[i],constraints);
+            constraints.gridx++;
+        }
+        */
+        guiObj.add(panel,BorderLayout.WEST);
+        pane.add(guiObj);
+        
+        
         JButton btn;
         btn = JButtonArr[1][1];
         btn.setText("Cancel");
@@ -243,7 +333,33 @@ public class GUI extends JFrame implements MouseListener{
         }
     }
     
-    
+    void updateInfoPanel()
+    {
+        if(game.turn == 0)
+        {
+            textTurn.setText("AI");
+        }
+        else textTurn.setText(game.player2.name);
+        
+        textMove.setText(move.toString());
+        
+        if(game.winner!=-1)
+        {
+            String str = new String();
+            str = "Game Over. ";
+            if(game.winner == 0)
+                str = str + "Draw";
+            else if(game.winner == 1)
+            {
+                str = str + "You Lose";
+            }
+            else if(game.winner == 2)
+            {
+                str = str + "You won";
+            }
+            textResult.setText(str);
+        }
+    }
     
     public void assignPiece(JButton btn, Piece pc)
     {

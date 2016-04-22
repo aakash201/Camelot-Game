@@ -23,9 +23,12 @@ public class CamelotGame {
     public Move curMove;
     public Player player1,player2;
     public GUI gui;
-    public int cnt,gameOver;
+    public int cnt,gameOver,winner;
     public CamelotGame()
     {
+        player1 = new Player("AI");
+        player2 = new Player("Guest");
+        winner = -1;
         cnt = gameOver=0;
         turn = 0;
         int i,j;
@@ -197,7 +200,7 @@ public class CamelotGame {
         return 1;
     }
     
-    public void declareWinner()
+    public int declareWinner()
     {
         int i,j,whitePcCnt=0,blackPcCnt=0;
         System.out.println("in winner");
@@ -215,13 +218,13 @@ public class CamelotGame {
                         {
                             System.out.println("Winner is player 2");
                             gameOver = 1;
-                            return ;
+                            return 2;
                         }
                         if(i==16 && pc.color == 0)
                         {
                             System.out.println("Winner is player 1");
                             gameOver = 1;
-                            return ;
+                            return 1;
                         }
                     }
                     if(pc.color == 0)
@@ -236,17 +239,21 @@ public class CamelotGame {
         {
             gameOver = 1;
             System.out.println("Game ends in a draw");
+            return 0;
         }
         else if(whitePcCnt < 2)
         {
             gameOver = 1;
             System.out.println("winner is player 2");
+            return 2;
         }
         else if(blackPcCnt < 2)
         {
             gameOver = 1;
             System.out.println("winner is player 1");
+            return 1;
         }
+        return -1;
     }
     
     public ArrayList<Piece> singleMove(Move move,int realMove)
@@ -276,7 +283,7 @@ public class CamelotGame {
         {
             if(gameOver == 0 && checkState() == 0)
             {
-                declareWinner();
+                winner = declareWinner();
             }
         }
         return deadPieceList;

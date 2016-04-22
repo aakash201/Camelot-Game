@@ -10,12 +10,19 @@ package camelot.game;
  * @author aakashtyagi
  */
 public class Player {
-    public int id;
+    public String name;
     public int castleMoves;
     public int piecesLeft;
     
     public Player()
     {
-        
+        name = "Guest";
+        castleMoves = 0;piecesLeft = 14;
+    }
+    
+    public Player(String str)
+    {
+        name = str;
+        castleMoves = 0;piecesLeft = 14;
     }
 }
