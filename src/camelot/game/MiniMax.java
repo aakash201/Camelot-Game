@@ -40,7 +40,7 @@ public class MiniMax {
         {
             //CamelotGame prevState = new CamelotGame(cg);
             ArrayList<Piece> deadPieces = new ArrayList<Piece>();
-            deadPieces = cg.singleMove(move);            
+            deadPieces = cg.singleMove(move,0);            
             MinMaxResult tempres = alphaBetaMax(alpha,beta,depth-1, cg);
             
             if(tempres.val <= alpha)
@@ -90,7 +90,7 @@ public class MiniMax {
         for(Move move : moveList)
         {
             ArrayList<Piece> deadPieces = new ArrayList<Piece>();
-            deadPieces = cg.singleMove(move); 
+            deadPieces = cg.singleMove(move,0); 
             //deadPieces = cg.singleMove(move);            
             MinMaxResult tempres = alphaBetaMin(alpha,beta,depth-1, cg);
             

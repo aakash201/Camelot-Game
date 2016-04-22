@@ -78,10 +78,9 @@ public class GUI extends JFrame implements MouseListener{
             move = MiniMax.Maxi(3,game).move;
             game.display();
             move.display();
-            deadPieceList=game.singleMove(move);
-            //refreshGrid(game);
-            if(game.checkState() == 0)
-                game.declareWinner();
+            deadPieceList=game.singleMove(move,1);
+            refreshGridUtil(game);
+            
         }
         else
         {
@@ -109,10 +108,9 @@ public class GUI extends JFrame implements MouseListener{
                         if(e.getButton() == MouseEvent.BUTTON3)
                         {
                             moveFlag = 0;
-                            deadPieceList=game.singleMove(move);
-                            //refreshGrid(game);
-                            if(game.checkState() == 0)
-                                game.declareWinner();
+                            deadPieceList=game.singleMove(move,1);
+                            refreshGridUtil(game);
+                            
                         }
                     
                     }

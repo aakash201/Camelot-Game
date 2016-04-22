@@ -23,10 +23,10 @@ public class CamelotGame {
     public Move curMove;
     public Player player1,player2;
     public GUI gui;
-    public int cnt;
+    public int cnt,gameOver;
     public CamelotGame()
     {
-        cnt = 0;
+        cnt = gameOver=0;
         turn = 0;
         int i,j;
         grid = new Cell[17][13];
@@ -168,16 +168,94 @@ public class CamelotGame {
     */
     public int checkState()
     {
+        int i,j,whitePcCnt=0,blackPcCnt=0;
+        Piece pc;
+        for(i=1;i<=16;i++)
+        {
+            for(j=1;j<=12;j++)
+            {
+                pc = getPiece(i,j);
+                if(pc!=null)
+                {
+                    if(grid[i][j].castle == 1)
+                    {
+                        if(i == 1 && pc.color == 1)
+                            return 0;
+                        if(i==16 && pc.color == 0)
+                            return 0;
+                    }
+                    if(pc.color == 0)
+                    {
+                        whitePcCnt++;
+                    }
+                    else blackPcCnt++;
+                }
+            }
+        }
+        if(whitePcCnt <2 || blackPcCnt < 2)
+            return 0;
         return 1;
     }
     
     public void declareWinner()
     {
-        
+        int i,j,whitePcCnt=0,blackPcCnt=0;
+        System.out.println("in winner");
+        Piece pc;
+        for(i=1;i<=16;i++)
+        {
+            for(j=1;j<=12;j++)
+            {
+                pc = getPiece(i,j);
+                if(pc!=null)
+                {
+                    if(grid[i][j].castle == 1)
+                    {
+                        if(i == 1 && pc.color == 1)
+                        {
+                            System.out.println("Winner is player 2");
+                            gameOver = 1;
+                            return ;
+                        }
+                        if(i==16 && pc.color == 0)
+                        {
+                            System.out.println("Winner is player 1");
+                            gameOver = 1;
+                            return ;
+                        }
+                    }
+                    if(pc.color == 0)
+                    {
+                        whitePcCnt++;
+                    }
+                    else blackPcCnt++;
+                }
+            }
+        }
+        if(whitePcCnt <2 && blackPcCnt < 2)
+        {
+            gameOver = 1;
+            System.out.println("Game ends in a draw");
+        }
+        else if(whitePcCnt < 2)
+        {
+            gameOver = 1;
+            System.out.println("winner is player 2");
+        }
+        else if(blackPcCnt < 2)
+        {
+            gameOver = 1;
+            System.out.println("winner is player 1");
+        }
     }
     
-    public ArrayList<Piece> singleMove(Move move)
+    public ArrayList<Piece> singleMove(Move move,int realMove)
     {
+        if(realMove == 1 && gameOver == 1)
+        {
+            System.out.println("Sorry game is over");
+            return null;
+        }
         ArrayList<Piece> deadPieceList = new ArrayList<Piece>();
         //move.display();
         
@@ -189,11 +267,18 @@ public class CamelotGame {
             deadPieceList=move.executeMove(this);
             if(turn == 0) turn = 1;
             else turn = 0;
-            gui.refreshGridUtil(this);
+            //gui.refreshGridUtil(this);
             //System.out.println("no");
             //display();
         }
         else System.out.println("\nincorrect move");
+        if(realMove == 1)
+        {
+            if(gameOver == 0 && checkState() == 0)
+            {
+                declareWinner();
+            }
+        }
         return deadPieceList;
     }
     
@@ -252,6 +337,7 @@ public class CamelotGame {
         }
         return dist;
     }
+    /*
     double getBoundingValue() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         double exposedPieces=0,castleDistWhite=0,castleDistBlack=0,pieceCntWhite=0,pieceCntBlack=0,res=0;
@@ -281,11 +367,77 @@ public class CamelotGame {
         avgCastleDist = (castleDistWhite)/pieceCntWhite - castleDistBlack/pieceCntBlack;
         diff = pieceCntWhite - pieceCntBlack;
         res = diff*100 - avgCastleDist;
-        /*
-        if(turn == 0)
+        
         return res;
-        else return (-res);*/
-        return res;
+    }
+    */
+    
+    double getBoundingValue() {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        double exposedPieces=0,castleDistWhite=0,castleDistBlack=0,pieceCntWhite=0,pieceCntBlack=0,res=0;
+        double diff,avgCastleDist;
+        Piece pc;
+        int i,j;
+        double minBlackOppCastle, minWhiteOppCastle, minWhiteSCastle, minBlackSCastle;
+        minBlackOppCastle = minWhiteOppCastle = minWhiteSCastle = minBlackSCastle= 100000000; 
+        for(i=1;i<=16;i++)
+        {
+            for(j=1;j<=12;j++)
+            {
+                pc = getPiece(i,j);
+                if(pc!=null)
+                {
+                    if(pc.color == 0)
+                    {
+                        double dist = (distToCastle(i, j, 0)) * 0.5;
+                        double dist2 = ((distToCastle(i, j, 1)) * 0.5);
+                        castleDistWhite +=  dist;
+                        if(dist < minWhiteOppCastle)
+                        {
+                            minWhiteOppCastle = dist;
+                        }
+                        if(dist2 < minWhiteSCastle)
+                        {
+                            minWhiteSCastle = dist2;
+                        }
+                        if(pc.isKnight == 1)
+                            pieceCntWhite+=2;
+                        else
+                            pieceCntWhite++;
+                    }
+                    else{
+                        double dist = (distToCastle(i,j,1)) * 0.5;
+                        double dist2 = ((distToCastle(i,j,0)) * 0.5);
+                        castleDistBlack += (dist);
+                        if(dist2 < minBlackSCastle)
+                        {
+                            minBlackSCastle = dist2;
+                        }
+                        if(dist < minBlackOppCastle)
+                        {
+                            minBlackOppCastle = dist;
+                        }
+                        if(pc.isKnight == 1)
+                            pieceCntBlack+=2;
+                        else
+                            pieceCntBlack++;
+                    }
+                }
+            }
+        }
+        double temp = 0.0;
+        if(minWhiteSCastle > minBlackOppCastle)
+        {
+            temp -= 10000.0;
+        }
+        if(minBlackSCastle > minWhiteOppCastle)
+        {
+            temp += 10000.0;
+        }
+        avgCastleDist = (castleDistWhite + (2*minWhiteOppCastle))/(pieceCntWhite+1) - (castleDistBlack+(2*minBlackOppCastle))/(pieceCntBlack+1);
+        diff = pieceCntWhite - pieceCntBlack;
+        res = diff*100 - avgCastleDist;
+        return temp + res;
     }
 
     void revertMove(Move move, ArrayList<Piece> deadPieces) {
@@ -317,7 +469,7 @@ public class CamelotGame {
         grid[x][y].empty = 0;
         turn = (turn == 0 ? 1 : 0);
         //display();
-        gui.refreshGridUtil(this);
+        //gui.refreshGridUtil(this);
     }
     
 }
