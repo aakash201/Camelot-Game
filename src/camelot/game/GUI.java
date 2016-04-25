@@ -9,6 +9,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -27,6 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
 /**
@@ -148,12 +150,12 @@ public class GUI extends JFrame implements MouseListener{
         int i,j;
         Container pane = getContentPane();
         JPanel guiObj = new JPanel(new BorderLayout(30,30));
-        JPanel guiObj1 = new JPanel(new GridLayout(rows,cols));
+        JPanel guiObj1 = new JPanel(new GridLayout(rows+1,cols+1));
         //pane.setLayout(new GridLayout(rows, cols));
         //ImageIcon pawn = new ImageIcon("src/images/blackKnight.png");
         guiObj.add(guiObj1);
-        for (i = 1; i <= 16; i++) {
-            for(j = 1 ; j <= 12 ; j++)
+        for (i = 0; i <= 16; i++) {
+            for(j = 0 ; j <= 12 ; j++)
             {
                 JButton button = new JButton();
                 button.setPreferredSize(new Dimension(50,50));
@@ -174,36 +176,51 @@ public class GUI extends JFrame implements MouseListener{
         constraints.insets = new Insets(10,10,10,10);
         constraints.gridx = 0;
         constraints.gridy = 0; 
-        JLabel playerName = new JLabel("Player Name");
+        constraints.gridwidth = 2;
+        JLabel picLabel = new JLabel(new ImageIcon("src/images/pawnsKnights.png"));
+        Border border = BorderFactory.createBevelBorder(1, Color.DARK_GRAY, Color.DARK_GRAY);
+        picLabel.setBorder(border);
+        panel.add(picLabel, constraints);
+        constraints.gridwidth = 1;
+        JLabel playerName = new JLabel("  Player Name:");
+       
+        constraints.gridy = 1;
         panel.add(playerName, constraints);
         constraints.gridx = 1;
-        textPlayerName= new JTextField(20);
+        textPlayerName= new JTextField(17);
+     
         panel.add(textPlayerName, constraints);
         constraints.gridx = 0;
-        constraints.gridy = 1;
+        constraints.gridy = 2;
         updateBtn = new JButton("Update");
         updateBtn.addMouseListener(this);
-        panel.add(updateBtn,constraints);
+        panel.add(updateBtn, constraints);
         JLabel labelTurn = new JLabel("Turn");
-        textTurn = new JTextField(20);
-        textTurn.setText("AI");
-        constraints.gridy = 2;
+        textTurn = new JTextField(17);
+        textTurn.setHorizontalAlignment(SwingConstants.CENTER);
+        textTurn.setFont(new Font("Times New Roman",1, 13));
+        textTurn.setText("A I");
+        constraints.gridy = 3;
         panel.add(labelTurn,constraints);
         constraints.gridx = 1;
         panel.add(textTurn,constraints);
         constraints.gridx = 0;
-        constraints.gridy = 3;
+        constraints.gridy = 4;
         JLabel labelLastMove = new JLabel("Last Move");
         panel.add(labelLastMove,constraints);
         constraints.gridx = 1;
-        textMove = new JTextField(20);
+        textMove = new JTextField(17);
+        textMove.setHorizontalAlignment(SwingConstants.CENTER);
+        textMove.setFont(new Font("Times New Roman",1, 13));
         panel.add(textMove,constraints);
         constraints.gridx = 0;
-        constraints.gridy = 4;
+        constraints.gridy = 5;
         JLabel labelResult = new JLabel("Result");
         panel.add(labelResult,constraints);
         constraints.gridx = 1;
-        textResult=new JTextField(20);
+        textResult=new JTextField(17);
+        textResult.setHorizontalAlignment(SwingConstants.CENTER);
+        textResult.setFont(new Font("Times New Roman",1, 13));
         panel.add(textResult,constraints);
         /*
         JLabel AIDeadPieces = new JLabel("AI Dead Pieces");
@@ -241,6 +258,22 @@ public class GUI extends JFrame implements MouseListener{
         btn.setText("U");
         btn = JButtonArr[3][1];
         btn.setText("AI");
+        
+        for(i=1; i<=12; i++)
+        {
+            btn = JButtonArr[0][i];
+            btn.setText(""+i);
+            btn.setBackground(Color.WHITE);
+        }
+        for(i=1;i<=16;i++)
+        {
+            btn= JButtonArr[i][0];
+            btn.setText("" + (char)('A' + i-1));
+            btn.setBackground(Color.WHITE);
+            
+        }
+        btn = JButtonArr[0][0];
+        btn.setBackground(Color.GREEN);
     }
     
     public void init(CamelotGame cg)
@@ -257,12 +290,14 @@ public class GUI extends JFrame implements MouseListener{
         int i,j,v;
         JButton btn;
         Piece pc;
+        
         for(i=1;i<=16;i++)
         {
             for(j=1;j<=12;j++)
             {
                 
                 btn = JButtonArr[i][j];
+                
                 Border defaultBorder = BorderFactory.createBevelBorder(1);
                 btn.setBorder(defaultBorder);
                 v = (i%2) ^ (j%2);

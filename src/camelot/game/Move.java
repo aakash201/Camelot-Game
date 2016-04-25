@@ -190,7 +190,7 @@ public class Move {
         int i;
         for(i=0;i<chanceCnt;i++)
         {
-            str = str + (chance.get(i).row + ":"  + chance.get(i).col + " ");
+            str = str + (" " + (char) ('A' + chance.get(i).row - 1) + chance.get(i).col + " ");
         }
         return str;
     }
